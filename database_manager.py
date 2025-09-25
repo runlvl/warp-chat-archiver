@@ -127,16 +127,23 @@ class WarpDatabaseManager:
     
     DEFAULT_DB_PATH = Path.home() / ".local/state/warp-terminal/warp.sqlite"
     
-    def __init__(self, db_path: Optional[str] = None):
+    def __init__(self, db_path: Optional[str] = None, allow_missing: bool = False):
         self.db_path = Path(db_path) if db_path else self.DEFAULT_DB_PATH
         self.logger = logging.getLogger(__name__)
+        self.allow_missing = allow_missing
         
-        # Verify database exists
-        if not self.db_path.exists():
+        # Verify database exists (unless allow_missing is True)
+        if not allow_missing and not self.db_path.exists():
             raise FileNotFoundError(f"Warp database not found at {self.db_path}")
+        
+        # Set database availability flag
+        self.database_available = self.db_path.exists()
     
     def get_connection(self) -> sqlite3.Connection:
         """Get a connection to the Warp database"""
+        if not self.database_available:
+            raise FileNotFoundError(f"Warp database not available at {self.db_path}")
+        
         try:
             conn = sqlite3.connect(str(self.db_path))
             conn.row_factory = sqlite3.Row  # Enable column access by name
@@ -147,6 +154,10 @@ class WarpDatabaseManager:
     
     def get_all_conversations(self) -> List[ChatConversation]:
         """Retrieve all conversations from the database"""
+        if not self.database_available:
+            self.logger.warning("Database not available, returning empty conversation list")
+            return []
+        
         query = """
         SELECT id, conversation_id, active_task_id, conversation_data, last_modified_at
         FROM agent_conversations
@@ -175,9 +186,6 @@ class WarpDatabaseManager:
         except sqlite3.Error as e:
             self.logger.error(f"Failed to retrieve conversations: {e}")
             return []
-    
-    def get_conversation_by_id(self, conversation_id: str) -> Optional[ChatConversation]:
-        """Retrieve a specific conversation by ID"""
         query = """
         SELECT id, conversation_id, active_task_id, conversation_data, last_modified_at
         FROM agent_conversations

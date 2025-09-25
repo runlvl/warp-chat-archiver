@@ -29,7 +29,7 @@ Warp Chat Archiver is an open source project and we love to receive contribution
 1. **Fork the repository** on GitHub
 2. **Clone your fork** locally:
    ```bash
-   git clone https://github.com/yourusername/warp-chat-archiver.git
+   git clone https://github.com/runlvl/warp-chat-archiver.git
    cd warp-chat-archiver
    ```
 

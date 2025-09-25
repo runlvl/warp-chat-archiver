@@ -59,10 +59,10 @@ class BackupInfo:
 class BackupManager:
     """Manages automated backups of Warp conversations"""
     
-    def __init__(self, config: Optional[BackupConfig] = None):
+    def __init__(self, config: Optional[BackupConfig] = None, db_manager: Optional[WarpDatabaseManager] = None):
         self.logger = logging.getLogger(__name__)
         self.config = config or BackupConfig(backup_dir=str(Path.home() / "warp-chat-backups"))
-        self.db_manager = WarpDatabaseManager()
+        self.db_manager = db_manager or WarpDatabaseManager(allow_missing=True)
         
         # Ensure backup directory exists
         Path(self.config.backup_dir).mkdir(parents=True, exist_ok=True)

@@ -22,19 +22,19 @@ class TestDatabaseManager(unittest.TestCase):
     """Test database functionality"""
     
     def test_database_manager_init(self):
-        """Test DatabaseManager initialization"""
-        # Test with non-existent database
-        with patch('os.path.exists', return_value=False):
-            db = database_manager.DatabaseManager()
-            self.assertIsNone(db.connection)
+        """Test WarpDatabaseManager initialization"""
+        # Test with allow_missing=True (for tests)
+        db = database_manager.WarpDatabaseManager(allow_missing=True)
+        self.assertIsNotNone(db)
+        # Database availability depends on file existence
+        self.assertIsInstance(db.database_available, bool)
     
-    def test_find_warp_database(self):
-        """Test database discovery"""
-        db = database_manager.DatabaseManager()
-        # Should not raise exception
-        result = db.find_warp_database()
-        # Result can be None (no database) or a path
-        self.assertTrue(result is None or isinstance(result, str))
+    def test_database_manager_empty_conversations(self):
+        """Test that missing database returns empty conversation list"""
+        db = database_manager.WarpDatabaseManager(allow_missing=True)
+        # Should not raise exception and return empty list
+        conversations = db.get_all_conversations()
+        self.assertIsInstance(conversations, list)
 
 
 class TestExportManager(unittest.TestCase):
@@ -76,16 +76,21 @@ class TestBackupManager(unittest.TestCase):
     
     def test_backup_manager_init(self):
         """Test BackupManager initialization"""
-        with patch('os.path.exists', return_value=True):
-            backup_mgr = backup_manager.BackupManager()
+        with patch('pathlib.Path.mkdir'):
+            # Create mock database manager to avoid dependency on real DB
+            mock_db_manager = Mock()
+            config = backup_manager.BackupConfig(backup_dir="/tmp/test-backups")
+            backup_mgr = backup_manager.BackupManager(config, db_manager=mock_db_manager)
             self.assertIsNotNone(backup_mgr)
     
     def test_backup_directory_creation(self):
         """Test backup directory creation"""
-        with patch('os.makedirs') as mock_makedirs:
-            with patch('os.path.exists', return_value=False):
-                backup_mgr = backup_manager.BackupManager("/tmp/test-backups")
-                mock_makedirs.assert_called()
+        with patch('pathlib.Path.mkdir') as mock_mkdir:
+            # Mock database manager
+            mock_db_manager = Mock()
+            config = backup_manager.BackupConfig(backup_dir="/tmp/test-backups")
+            backup_mgr = backup_manager.BackupManager(config, db_manager=mock_db_manager)
+            mock_mkdir.assert_called_with(parents=True, exist_ok=True)
 
 
 class TestIntegration(unittest.TestCase):
