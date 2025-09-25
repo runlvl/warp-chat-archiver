@@ -1,0 +1,29 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Warp Chat Archiver
+GenericName=Chat Archive Manager
+Comment=Archive, manage and export Warp Terminal conversations
+Comment[de]=Archivieren, verwalten und exportieren Sie Warp Terminal-Gespräche
+
+# Execution
+Exec=/usr/bin/python3 /home/johann/warp-chat-archiver/launch.py
+Path=/home/johann/warp-chat-archiver
+Icon=/home/johann/warp-chat-archiver/warp-chat-archiver.svg
+Terminal=false
+StartupNotify=true
+StartupWMClass=warp-chat-archiver
+
+# Categories and MIME types
+Categories=Utility;Development;Office;Database;Archiving;
+Keywords=warp;chat;archive;export;backup;conversation;ai;terminal;
+MimeType=application/json;application/x-sqlite3;text/csv;
+
+# Application properties
+StartupNotify=true
+NoDisplay=false
+Hidden=false
+
+# Additional metadata
+X-GNOME-UsesNotifications=true
+X-Desktop-File-Install-Version=0.24

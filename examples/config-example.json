@@ -1,0 +1,68 @@
+{
+  "_comment": "Example configuration for Warp Chat Archiver",
+  "_note": "Copy this to ~/.config/warp-chat-archiver/config.json and customize",
+  
+  "database": {
+    "path": "~/.local/share/dev.warp.Warp-Stable/warp.sqlite",
+    "backup_path": "~/warp-chat-backups",
+    "check_interval": 30
+  },
+  
+  "export": {
+    "default_format": "json",
+    "output_directory": "~/Documents/warp-exports",
+    "include_metadata": true,
+    "compress_exports": true,
+    "formats": {
+      "json": {
+        "indent": 2,
+        "ensure_ascii": false
+      },
+      "markdown": {
+        "include_toc": true,
+        "format_todos": true
+      },
+      "html": {
+        "theme": "light",
+        "include_css": true
+      },
+      "csv": {
+        "delimiter": ",",
+        "include_headers": true
+      }
+    }
+  },
+  
+  "backup": {
+    "auto_backup": true,
+    "backup_interval_hours": 24,
+    "compression": "gzip",
+    "retention_days": 30,
+    "max_backups": 10,
+    "verify_backups": true
+  },
+  
+  "ui": {
+    "theme": "system",
+    "window_size": [1200, 800],
+    "auto_refresh": true,
+    "refresh_interval": 300,
+    "show_notifications": true,
+    "minimize_to_tray": true
+  },
+  
+  "logging": {
+    "level": "INFO",
+    "file": "~/.local/share/warp-chat-archiver/logs/archiver.log",
+    "max_size_mb": 10,
+    "backup_count": 5,
+    "console_output": false
+  },
+  
+  "performance": {
+    "max_conversations_per_page": 100,
+    "cache_conversations": true,
+    "cache_size_mb": 50,
+    "background_operations": true
+  }
+}

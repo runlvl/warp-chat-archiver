@@ -1,0 +1,33 @@
+# Warp Chat Archiver - Requirements
+# Core dependencies for the Warp Chat Archiver application
+
+# Standard library modules (included in Python 3.8+)
+# - tkinter (GUI framework)
+# - sqlite3 (database connectivity)
+# - json (JSON processing)
+# - threading (background operations)
+# - datetime (date/time handling)
+# - pathlib (path handling)
+# - logging (logging functionality)
+# - gzip (compression)
+# - tarfile (archive creation)
+# - csv (CSV export)
+# - html (HTML escaping)
+# - subprocess (system commands)
+# - platform (OS detection)
+
+# No additional third-party packages required!
+# The application is built entirely with Python standard library modules
+# for maximum compatibility and ease of installation.
+
+# Optional dependencies (for future enhancements):
+# requests>=2.25.0           # For cloud storage APIs
+# cryptography>=3.4.0       # For backup encryption
+# keyring>=23.0.0            # For secure credential storage
+# pytest>=6.0.0              # For testing
+# pyinstaller>=4.5.0         # For creating standalone executables
+
+# Development dependencies:
+# black>=21.0.0              # Code formatting
+# flake8>=3.8.0              # Code linting
+# mypy>=0.812                # Type checking
