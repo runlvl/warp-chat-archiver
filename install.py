@@ -202,22 +202,29 @@ except Exception as e:
         
         # Add to crontab
         import subprocess
+        import shlex
         
-        cron_command = f"0 2 * * * {backup_script} >> ~/.warp-chat-archiver-cron.log 2>&1"
+        # Secure path quoting to prevent injection
+        backup_script_safe = shlex.quote(str(backup_script))
+        log_file_safe = shlex.quote(str(Path.home() / ".warp-chat-archiver-cron.log"))
+        cron_command = f"0 2 * * * {backup_script_safe} >> {log_file_safe} 2>&1"
         
         # Get current crontab
         try:
             result = subprocess.run(["crontab", "-l"], capture_output=True, text=True, check=False)
             current_crontab = result.stdout if result.returncode == 0 else ""
-        except:
+        except subprocess.CalledProcessError as e:
             current_crontab = ""
         
-        # Check if already exists
-        if str(backup_script) in current_crontab:
+        # Check if already exists (use safe path for comparison)
+        if backup_script_safe in current_crontab:
             print("✅ Cron job already exists")
             return True
         
-        # Add new cron job
+        # Add new cron job - validate cron_command format
+        if not cron_command.strip() or len(cron_command) > 1000:  # Reasonable length limit
+            raise ValueError("Invalid cron command format")
+        
         new_crontab = current_crontab.rstrip() + f"\n{cron_command}\n"
         
         process = subprocess.run(["crontab", "-"], input=new_crontab, text=True, check=True)

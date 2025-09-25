@@ -11,7 +11,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 import logging
-from database_manager import ChatConversation, WarpDatabaseManager
+from datetime import datetime
+from security_utils import validate_export_path, safe_filename, SecurityError
+from database_manager import ChatConversation
 
 
 class ExportManager:
@@ -20,10 +22,15 @@ class ExportManager:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
     
-    def export_to_json(self, conversations: List[ChatConversation], output_path: str) -> bool:
+    def export_to_json(self, conversations: List[Dict], output_path: str) -> bool:
         """Export conversations to JSON format"""
         try:
-            output_path = Path(output_path)
+            # Validate output path for security
+            try:
+                output_file = validate_export_path(output_path)
+            except SecurityError as e:
+                self.logger.error(f"Export path validation failed: {e}")
+                return False
             output_path.parent.mkdir(parents=True, exist_ok=True)
             
             export_data = {

@@ -850,8 +850,9 @@ This section will show:
                         for conv in data.get('conversations', []):
                             if conv.get('conversation_id') in existing_ids:
                                 conflicts += 1
-                    except:
-                        pass
+                    except (json.JSONDecodeError, gzip.BadGzipFile, IOError) as e:
+                        # Failed to parse JSON - not critical for preview
+                        self.logger.debug(f"Failed to parse JSON for conflict check: {e}")
                 
                 preview_text += f"Potential Conflicts:\n"
                 preview_text += f"  - Existing conversations that would be affected: {conflicts}\n"

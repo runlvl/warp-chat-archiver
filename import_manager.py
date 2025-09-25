@@ -11,8 +11,11 @@ import csv
 from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
+from dataclasses import dataclass, field
 import logging
-from dataclasses import dataclass
+from datetime import datetime
+from security_utils import validate_import_path, SecurityError
+from database_manager import WarpDatabaseManager
 
 from database_manager import WarpDatabaseManager, ChatConversation
 
@@ -24,11 +27,7 @@ class ImportResult:
     imported_count: int = 0
     skipped_count: int = 0
     error_count: int = 0
-    errors: List[str] = None
-    
-    def __post_init__(self):
-        if self.errors is None:
-            self.errors = []
+    errors: List[str] = field(default_factory=list)
     
     def add_error(self, error: str):
         self.errors.append(error)
@@ -47,6 +46,14 @@ class ImportManager:
         result = ImportResult(success=False)
         
         try:
+            # Validate import file path for security
+            try:
+                validated_path = validate_import_path(file_path)
+                file_path = str(validated_path)  # Use validated path
+            except SecurityError as e:
+                result.add_error(f"Import path validation failed: {e}")
+                self.logger.error(f"Import path validation failed: {e}")
+                return result
             file_path = Path(file_path)
             
             # Handle compressed files
@@ -269,8 +276,9 @@ class ImportManager:
                         # Parse raw data if it's JSON string
                         try:
                             conv_data['conversation_data'] = json.loads(conv_data['conversation_data'])
-                        except:
-                            pass  # Keep as string if not valid JSON
+                        except (json.JSONDecodeError, TypeError) as e:
+                            # Keep as string if not valid JSON
+                            self.logger.debug(f"CSV data not valid JSON, keeping as string: {e}")
                         
                         success = self._import_conversation_data(conv_data, overwrite_existing)
                         if success:
