@@ -37,7 +37,7 @@ setup(
     description="Professional desktop application for archiving Warp Terminal chat conversations",
     long_description=read_readme(),
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/warp-chat-archiver",
+    url="https://github.com/runlvl/warp-chat-archiver",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 5 - Production/Stable",
@@ -97,10 +97,10 @@ setup(
         ("share/pixmaps", ["assets/warp-chat-archiver.png"]),
     ],
     project_urls={
-        "Bug Reports": "https://github.com/yourusername/warp-chat-archiver/issues",
-        "Source": "https://github.com/yourusername/warp-chat-archiver",
-        "Documentation": "https://github.com/yourusername/warp-chat-archiver/wiki",
-        "Funding": "https://github.com/sponsors/yourusername",
+        "Bug Reports": "https://github.com/runlvl/warp-chat-archiver/issues",
+        "Source": "https://github.com/runlvl/warp-chat-archiver",
+        "Documentation": "https://github.com/runlvl/warp-chat-archiver/wiki",
+        "Funding": "https://github.com/sponsors/runlvl",
     },
     keywords="warp terminal chat archiver backup export gui desktop",
     platforms=["any"],
